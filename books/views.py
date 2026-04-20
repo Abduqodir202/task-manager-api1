@@ -4,15 +4,22 @@ from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 
-from accounts.utils import login_required_custom
+from accounts.models import UserRole
+from accounts.utils import login_required_custom, is_poster, is_moderator
 from books.forms import BookModelForm
-from books.models import Books
+from books.models import Books, Status
 
 
 def book_list(request):
     search = request.GET.get('search', '')
     page = request.GET.get('page')
     books = Books.objects.all()  # Queryset list [<booq1>.
+    if request.user.is_authenticated and request.user.role == UserRole.POSTER:
+        books = books.filter(created_by=request.user)
+    elif request.user.is_authenticated and request.user.role == UserRole.MODERATOR:
+        books = books.filter(status=Status.DRAFT)
+    else:
+        books = books.filter(status=Status.PUBLISHED)
     if search:
         books = books.filter(Q(title__icontains=search) | Q(description__icontains=search))
     paginator = Paginator(books, 3)
@@ -25,14 +32,16 @@ def book_detail(request, pk):
     return render(request, 'books/detail.html', {"book": book})
 
 
-@login_required
+# @login_required
+@is_poster
 def book_create_form(request):
     # form = BooksForm()
     form = BookModelForm()
     return render(request, 'books/create.html', {"form": form})
 
 
-@login_required
+# @login_required
+@is_poster
 def book_create(request):
     # data = request.POST
     # book = Books(title=data.get("title"), description=data.get("description"), price=data.get("price"))
@@ -44,19 +53,23 @@ def book_create(request):
     if form.is_valid():
         # data = form.cleaned_data
         # Books.objects.create(**data)
-        form.save()
+        book = form.save(commit=False)
+        book.created_by = request.user
+        book.save()
         return redirect('book_list')
     return render(request, 'books/create.html', {"form": form})
 
 
-@login_required
+# @login_required
+@is_poster
 def book_update_forme(request, pk=None):
     book = Books.objects.filter(id=pk).first()
     form = BookModelForm(instance=book)
     return render(request, 'books/update.html', {"form": form, "book": book})
 
 
-@login_required
+# @login_required
+@is_poster
 def book_update(request, pk=None):
     # Books.objects.filter(id=pk).update(title=request.POST.get("title"), description=request.POST.get("description"),
     #                                    price=request.POST.get("price"))
@@ -68,7 +81,16 @@ def book_update(request, pk=None):
     return render(request, 'books/update.html', {"form": form, "book": book})
 
 
-@login_required_custom
+# @login_required_custom
+@is_poster
 def book_delete(request, pk=None):
     Books.objects.filter(id=pk).delete()
+    return redirect('book_list')
+
+
+@is_moderator
+def book_published(request, pk=None):
+    book = Books.objects.filter(id=pk).first()
+    book.status = Status.PUBLISHED
+    book.save()
     return redirect('book_list')

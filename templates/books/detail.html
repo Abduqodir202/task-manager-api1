@@ -15,6 +15,11 @@
             <a href="{% url 'book_list' %}">
                 <button>orqaga</button>
             </a>
+            {% if request.user.role == 'moderator' %}
+                <a href="{% url 'book_published' book.id %}">
+                    <button>published</button>
+                </a>
+            {% endif %}
         </div>
     </div>
 

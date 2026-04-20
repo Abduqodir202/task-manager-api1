@@ -10,4 +10,5 @@ urlpatterns = [
     path('update-form/<int:pk>/', views.book_update_forme, name='book_update_form'),
     path('update/<int:pk>/', views.book_update, name='book_update'),
     path('delete/<int:pk>/', views.book_delete, name='book_delete'),
+    path('published/<int:pk>/', views.book_published, name='book_published'),
 ]

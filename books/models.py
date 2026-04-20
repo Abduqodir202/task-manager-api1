@@ -1,5 +1,6 @@
 from django.db import models
 
+from accounts.models import User
 from common.models import BaseModel, DeletedModel
 
 
@@ -7,6 +8,11 @@ class BookType(models.TextChoices):
     STANDARD = 'standard'
     BADIIY = 'badiiy'
     ILMIY = 'ilmiy'
+
+
+class Status(models.TextChoices):
+    PUBLISHED = 'published'
+    DRAFT = 'draft'
 
 
 class Author(BaseModel, DeletedModel):
@@ -29,6 +35,8 @@ class Books(BaseModel, DeletedModel):
     authors = models.ManyToManyField(Author, related_name='books')
     price = models.DecimalField(max_digits=10, decimal_places=2)
     type = models.CharField(max_length=20, choices=BookType.choices, default=BookType.STANDARD)
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.DRAFT)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f'{self.title}'
