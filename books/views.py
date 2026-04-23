@@ -1,11 +1,8 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import  permission_required
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
-
 from accounts.models import UserRole
-from accounts.utils import login_required_custom, is_poster, is_moderator
 from books.forms import BookModelForm
 from books.models import Books, Status
 
@@ -33,7 +30,8 @@ def book_detail(request, pk):
 
 
 # @login_required
-@is_poster
+# @is_poster
+@permission_required('books.add_books', raise_exception=True)
 def book_create_form(request):
     # form = BooksForm()
     form = BookModelForm()
@@ -41,7 +39,8 @@ def book_create_form(request):
 
 
 # @login_required
-@is_poster
+# @is_poster
+@permission_required('books.add_books', raise_exception=True)
 def book_create(request):
     # data = request.POST
     # book = Books(title=data.get("title"), description=data.get("description"), price=data.get("price"))
@@ -61,7 +60,8 @@ def book_create(request):
 
 
 # @login_required
-@is_poster
+# @is_poster
+@permission_required('books.change_books', raise_exception=True)
 def book_update_forme(request, pk=None):
     book = Books.objects.filter(id=pk).first()
     form = BookModelForm(instance=book)
@@ -69,7 +69,8 @@ def book_update_forme(request, pk=None):
 
 
 # @login_required
-@is_poster
+# @is_poster
+@permission_required('books.change_books', raise_exception=True)
 def book_update(request, pk=None):
     # Books.objects.filter(id=pk).update(title=request.POST.get("title"), description=request.POST.get("description"),
     #                                    price=request.POST.get("price"))
@@ -82,13 +83,15 @@ def book_update(request, pk=None):
 
 
 # @login_required_custom
-@is_poster
+# @is_poster
+@permission_required('books.delete_books', raise_exception=True)
 def book_delete(request, pk=None):
     Books.objects.filter(id=pk).delete()
     return redirect('book_list')
 
 
-@is_moderator
+# @is_moderator
+@permission_required('books.can_publish', raise_exception=True)
 def book_published(request, pk=None):
     book = Books.objects.filter(id=pk).first()
     book.status = Status.PUBLISHED

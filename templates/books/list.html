@@ -7,7 +7,8 @@
 {% block main %}
 
     <h1>📚 Book List page</h1>
-    {% if request.user.role == 'poster' %}
+    {#    {% if request.user.role == 'poster' %}#}
+    {% if perms.books.add_books %}
 
         <a href="{% url 'book_create_form' %}">
             <button class="btn btn-primary">create</button>
@@ -23,10 +24,16 @@
                     <button class="btn btn-primary">detail</button>
                 </a>
 
-                {% if request.user.role == 'poster' %}
+                {#                {% if request.user.role == 'poster' %}#}
+                {% if perms.books.change_books %}
+
                     <a href="{% url 'book_update_form' book.id %}">
                         <button class="btn btn-warning">update</button>
                     </a>
+                {% endif %}
+
+                {% if perms.books.delete_books %}
+
                     <a href="{% url 'book_delete' book.id %}">
                         <button class="btn btn-danger">delete</button>
                     </a>

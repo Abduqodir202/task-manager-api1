@@ -43,6 +43,9 @@ class Books(BaseModel, DeletedModel):
 
     class Meta:
         db_table = 'books'
+        permissions = [
+            ("can_publish", "Can Publish Books"),
+        ]
         ordering = ['-created_time']
 
 

@@ -15,7 +15,8 @@
             <a href="{% url 'book_list' %}">
                 <button>orqaga</button>
             </a>
-            {% if request.user.role == 'moderator' %}
+            {#            {% if request.user.role == 'moderator' %}#}
+            {% if perms.books.can_publish %}
                 <a href="{% url 'book_published' book.id %}">
                     <button>published</button>
                 </a>
