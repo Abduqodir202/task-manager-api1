@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'common',
     "product",
     "accounts",
+    "files",
 ]
 
 MIDDLEWARE = [
@@ -135,6 +136,12 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+
+# Media fayllar URL manzili
+MEDIA_URL = '/media/'
+
+# Server diskida qayerda saqlansin
+MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

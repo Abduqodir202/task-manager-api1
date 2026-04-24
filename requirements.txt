@@ -2,3 +2,4 @@ django==5.2.12
 psycopg2-binary==2.9.11
 django-extensions==4.1
 jupyter==1.1.1
+pillow==12.2.0

@@ -2,12 +2,10 @@
 
 {% block main %}
 
-    <form action="{% url 'product_create_save' %}" method="post" >
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
-        <button>saqlash</button>
-
-
+        <button>edit</button>
     </form>
 
 {% endblock %}
