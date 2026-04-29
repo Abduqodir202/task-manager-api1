@@ -153,3 +153,10 @@ LOGIN_REDIRECT_URL = reverse_lazy('book_list')
 LOGIN_URL = reverse_lazy('login')
 
 AUTH_USER_MODEL = "accounts.User"
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = "giyosoripov4@gmail.com"
+EMAIL_HOST_PASSWORD = "rbypdemhfughyjvc"

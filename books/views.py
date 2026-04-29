@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import  permission_required
+from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, redirect
@@ -86,7 +86,8 @@ def book_update(request, pk=None):
 # @is_poster
 @permission_required('books.delete_books', raise_exception=True)
 def book_delete(request, pk=None):
-    Books.objects.filter(id=pk).delete()
+    b1 = Books.objects.filter(id=pk).first()
+    b1.delete()
     return redirect('book_list')
 
 
