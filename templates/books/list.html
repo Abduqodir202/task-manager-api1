@@ -47,9 +47,9 @@
         <ul class="pagination">
 
             {#            Previous#}
-            {% if books.has_previous %}
+            {% if page_obj.has_previous %}
                 <li class="page-item">
-                    <a class="page-link" href="?search={{ search }}&page={{ books.previous_page_number }}" tabindex="-1"
+                    <a class="page-link" href="?search={{ search }}&page={{ page_obj.previous_page_number }}" tabindex="-1"
                        aria-disabled="true">Previous</a>
                 </li>
             {% else %}
@@ -60,8 +60,8 @@
 
 
             {#          raqamlar chiqadigan joy  #}
-            {% for book in books.paginator %}
-                {% if books.number == book.number %}
+            {% for book in page_obj.paginator %}
+                {% if page_obj.number == book.number %}
                     <li class="page-item active"><a class="page-link"
                                                     href="?search={{ search }}&page={{ book.number }}">{{ book.number }}</a>
                     </li>
@@ -78,9 +78,9 @@
 
 
             {#            next #}
-            {% if books.has_next %}
+            {% if page_obj.has_next %}
                 <li class="page-item">
-                    <a class="page-link" href="?search={{ search }}&page={{ books.next_page_number }}">Next</a>
+                    <a class="page-link" href="?search={{ search }}&page={{ page_obj.next_page_number }}">Next</a>
                 </li>
             {% else %}
                 <li class="page-item disabled">

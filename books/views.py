@@ -1,7 +1,12 @@
 from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.views import View
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+
 from accounts.models import UserRole
 from books.forms import BookModelForm
 from books.models import Books, Status
@@ -22,6 +27,67 @@ def book_list(request):
     paginator = Paginator(books, 3)
     books = paginator.get_page(page)
     return render(request, 'books/list.html', {"books": books, 'search': search})
+
+
+class BookListView(ListView):
+    model = Books
+    template_name = 'books/list.html'
+    context_object_name = 'books'
+    queryset = Books.objects.all()
+    paginate_by = 2
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(BookListView, self).get_context_data(**kwargs)
+        context['search'] = \
+            self.request.GET.get('search', '')
+        return context
+
+    def get_queryset(self):
+        search = self.request.GET.get('search', '')
+
+        if self.request.user.is_authenticated and self.request.user.role == UserRole.POSTER:
+            books = self.queryset.filter(created_by=self.request.user)
+        elif self.request.user.is_authenticated and self.request.user.role == UserRole.MODERATOR:
+            books = self.queryset.filter(status=Status.DRAFT)
+        else:
+            books = self.queryset.filter(status=Status.PUBLISHED)
+
+        if search:
+            books = books.filter(Q(title__icontains=search) | Q(description__icontains=search))
+        return books
+
+
+class BooksCreateView(PermissionRequiredMixin, CreateView):
+    model = Books
+    template_name = 'books/create.html'
+    form_class = BookModelForm
+    success_url = reverse_lazy('book_list')
+    permission_required = 'books.add_books'
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super().form_valid(form)
+
+
+class BooksUpdateView(PermissionRequiredMixin, UpdateView):
+    model = Books
+    template_name = 'books/update.html'
+    form_class = BookModelForm
+    permission_required = 'books.change_books'
+    success_url = reverse_lazy('book_list')
+    pk_url_kwarg = 'pk'
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super().form_valid(form)
+
+
+class BooksDeleteView(PermissionRequiredMixin, DeleteView):
+    model = Books
+    success_url = reverse_lazy('book_list')
+    permission_required = 'books.delete_books'
+    pk_url_kwarg = 'pk'
+    template_name = 'books/delete.html'
 
 
 def book_detail(request, pk):
