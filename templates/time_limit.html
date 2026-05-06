@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ish vaqti countdown</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, sans-serif;
+    }
+
+    body{
+      height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background:#0f172a;
+      color:white;
+    }
+
+    .card{
+      width:420px;
+      padding:40px;
+      border-radius:24px;
+      background:#111827;
+      box-shadow:0 0 30px rgba(0,0,0,0.4);
+      text-align:center;
+    }
+
+    h1{
+      font-size:32px;
+      margin-bottom:20px;
+    }
+
+    .status{
+      font-size:20px;
+      margin-bottom:25px;
+      font-weight:bold;
+    }
+
+    .timer{
+      font-size:56px;
+      font-weight:bold;
+      letter-spacing:3px;
+      margin-bottom:20px;
+      color:#38bdf8;
+    }
+
+    .progress-box{
+      width:100%;
+      height:18px;
+      background:#1e293b;
+      border-radius:999px;
+      overflow:hidden;
+    }
+
+    .progress{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,#22c55e,#38bdf8);
+      transition:0.5s;
+    }
+
+    .info{
+      margin-top:20px;
+      font-size:15px;
+      color:#94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>🕘 Tizim Ish Vaqti</h1>
+
+    <div class="status" id="status">
+      Tekshirilmoqda...
+    </div>
+
+    <div class="timer" id="timer">
+      00:00:00
+    </div>
+
+    <div class="progress-box">
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <div class="info">
+      Ish vaqti: 09:00 → 18:00
+    </div>
+  </div>
+
+  <script>
+    function updateTimer() {
+      const now = new Date();
+
+      const start = new Date();
+      start.setHours(9,0,0,0);
+
+      const end = new Date();
+      end.setHours(18,0,0,0);
+
+      const timer = document.getElementById("timer");
+      const status = document.getElementById("status");
+      const progress = document.getElementById("progress");
+
+      if(now >= start && now <= end){
+
+        const total = end - start;
+        const left = end - now;
+
+        const hours = Math.floor(left / (1000 * 60 * 60));
+        const minutes = Math.floor((left % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((left % (1000 * 60)) / 1000);
+
+        timer.innerHTML =
+          String(hours).padStart(2,'0') + ":" +
+          String(minutes).padStart(2,'0') + ":" +
+          String(seconds).padStart(2,'0');
+
+        status.innerHTML = "✅ Tizim ishlayapti";
+
+        const passed = now - start;
+        const percent = (passed / total) * 100;
+
+        progress.style.width = percent + "%";
+
+      } else {
+
+        timer.innerHTML = "OFFLINE";
+        progress.style.width = "0%";
+
+        if(now < start){
+          status.innerHTML = "⏳ Hali boshlanmadi";
+        } else {
+          status.innerHTML = "❌ Ish vaqti tugagan";
+        }
+      }
+    }
+
+    updateTimer();
+
+    setInterval(updateTimer, 1000);
+  </script>
+
+</body>
+</html>
