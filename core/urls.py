@@ -20,6 +20,7 @@ from django.contrib import admin
 # from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import path, include
+from django.conf.urls.i18n import i18n_patterns
 
 
 def home(request):
@@ -31,7 +32,7 @@ def home(request):
     # return HttpResponse("Hello, world.")
 
 
-urlpatterns = [
+urlpatterns = i18n_patterns(
     path('admin/', admin.site.urls),
     path('book/', include('books.urls')),
     path('product/', include('product.urls')),
@@ -39,7 +40,11 @@ urlpatterns = [
     path('files/', include('files.urls')),
     path('transaction/', include('transactions.urls')),
     path('', home),
-]
+    path('i18n/',
+         include('django.conf.urls.i18n')),
+    path('rosetta/',
+         include('rosetta.urls')),
+)
 
 if settings.DEBUG:
     urlpatterns += static(

@@ -1,0 +1,56 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-08 19:34+0500\n"
+"PO-Revision-Date: 2026-05-08 19:38+0500\n"
+"Last-Translator:   <admin@info.c.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Translated-Using: django-rosetta 0.10.3\n"
+
+#: books/models.py:34
+msgid "Title"
+msgstr "title"
+
+#: books/models.py:35
+msgid "Description"
+msgstr "description"
+
+#: books/models.py:36
+msgid "Authors"
+msgstr "authors"
+
+#: books/models.py:37
+msgid "Price"
+msgstr "price"
+
+#: core/settings.py:143
+msgid "English"
+msgstr "English"
+
+#: core/settings.py:144
+msgid "O'zbekcha"
+msgstr "Uzbek"
+
+#: core/settings.py:145
+msgid "Русский"
+msgstr "Russian"
+
+#: templates/books/list.html:10
+msgid "Book List page"
+msgstr "Book List page"
+
+#: templates/home.html:9
+msgid "Kitoblar"
+msgstr "Books"

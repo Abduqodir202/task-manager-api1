@@ -1,3 +1,5 @@
+from tabnanny import verbose
+
 from django import forms
 
 from books.models import Books
@@ -13,7 +15,7 @@ class BooksForm(forms.Form):
 class BookModelForm(forms.ModelForm):
     class Meta:
         model = Books
-        fields = ['title', 'description', 'price', 'authors']
+        fields = ['title_uz', 'title_en', 'title_ru', 'description_uz','description_en','description_ru', 'price', 'authors']
         widgets = {
             'description': forms.Textarea(attrs={
                 'class': 'form-control',
@@ -32,10 +34,10 @@ class BookModelForm(forms.ModelForm):
             raise forms.ValidationError("5 ta harfdan koproq kirit")
         return title
 
-    def clean(self):
-        title = self.cleaned_data['title']
-        description = self.cleaned_data['description']
-
-        if title == description:
-            raise forms.ValidationError("title va descriptionga bir xil malumot mumkin emas")
-        return self.cleaned_data
+    # def clean(self):
+    #     title = self.cleaned_data['title']
+    #     description = self.cleaned_data['description']
+    #
+    #     if title == description:
+    #         raise forms.ValidationError("title va descriptionga bir xil malumot mumkin emas")
+    #     return self.cleaned_data

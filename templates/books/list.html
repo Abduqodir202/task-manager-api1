@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block title %}
     book list
@@ -6,7 +7,7 @@
 
 {% block main %}
 
-    <h1>📚 Book List page</h1>
+    <h1>📚 {% trans "Book List page" %}</h1>
     {#    {% if request.user.role == 'poster' %}#}
     {% if perms.books.add_books %}
 
@@ -49,7 +50,8 @@
             {#            Previous#}
             {% if page_obj.has_previous %}
                 <li class="page-item">
-                    <a class="page-link" href="?search={{ search }}&page={{ page_obj.previous_page_number }}" tabindex="-1"
+                    <a class="page-link" href="?search={{ search }}&page={{ page_obj.previous_page_number }}"
+                       tabindex="-1"
                        aria-disabled="true">Previous</a>
                 </li>
             {% else %}

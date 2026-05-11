@@ -2,6 +2,7 @@ from django.db import models
 
 from accounts.models import User
 from common.models import BaseModel, DeletedModel
+from django.utils.translation import gettext_lazy as _
 
 
 class BookType(models.TextChoices):
@@ -30,10 +31,10 @@ class Author(BaseModel, DeletedModel):
 
 # id -> primary key-serial,title->varchar(255),description->text,author-varchar,type-> varchar
 class Books(BaseModel, DeletedModel):
-    title = models.CharField(max_length=255)
-    description = models.TextField()
-    authors = models.ManyToManyField(Author, related_name='books')
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    title = models.CharField(max_length=255, verbose_name=_("Title"))
+    description = models.TextField(verbose_name=_("Description"))
+    authors = models.ManyToManyField(Author, related_name='books', verbose_name=_("Authors"))
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("Price"))
     type = models.CharField(max_length=20, choices=BookType.choices, default=BookType.STANDARD)
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.DRAFT)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
