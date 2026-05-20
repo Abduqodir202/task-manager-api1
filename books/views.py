@@ -4,7 +4,6 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from accounts.models import UserRole
