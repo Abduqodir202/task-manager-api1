@@ -1,3 +1,4 @@
+import pyotp
 from django.contrib.auth.models import AbstractUser
 import random
 from django.db import models
@@ -15,9 +16,23 @@ class User(AbstractUser):
     phone_number = models.CharField(max_length=11, blank=True)
     email = models.EmailField(max_length=200, unique=True)
     amount = models.PositiveIntegerField(default=0)
+    is_2fa_enabled = models.BooleanField(default=False)  # 2FA yoqilganmi?
+    totp_secret = models.CharField(max_length=32, blank=True, null=True)  # Google Authenticator kaliti
 
     # USERNAME_FIELD = "email"
     # REQUIRED_FIELDS = ["username"]
+
+    def generate_totp_secret(self):
+        """Foydalanuvchi uchun yangi 2FA kalit generatsiya qilish."""
+        self.totp_secret = pyotp.random_base32()
+        self.save()
+
+    def verify_otp(self, otp_code):
+        """Foydalanuvchining kiritgan kodini tekshirish."""
+        if not self.totp_secret:
+            return False
+        totp = pyotp.TOTP(self.totp_secret)
+        return totp.verify(otp_code, valid_window=3)
 
     class Meta:
         db_table = "users"

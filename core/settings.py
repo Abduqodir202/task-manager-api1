@@ -161,12 +161,11 @@ LOCALE_PATHS = [
 
 SITE_ID = 2  # ← muhim!
 
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-)
+# AUTHENTICATION_BACKENDS = (
+#     'django.contrib.auth.backends.ModelBackend',
+#     'allauth.account.auth_backends.AuthenticationBackend',
+# )
 
-LOGIN_REDIRECT_URL = reverse_lazy('book_list')
 LOGOUT_REDIRECT_URL = reverse_lazy('login')
 
 # Ixtiyoriy — email orqali login
@@ -197,6 +196,15 @@ LOGIN_REDIRECT_URL = reverse_lazy('book_list')
 LOGIN_URL = reverse_lazy('login')
 
 AUTH_USER_MODEL = "accounts.User"
+
+GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = "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"
+
+GOOGLE_REDIRECT_URI = 'http://localhost:8000/accounts/google/login/callback/'
+
+GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/auth"
+GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
+GOOGLE_USER_INFO_URL = "https://www.googleapis.com/oauth2/v1/userinfo"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"

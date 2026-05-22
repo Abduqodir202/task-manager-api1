@@ -47,7 +47,7 @@ class LoginForm(forms.Form):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email', 'username')
+        fields = ('first_name', 'last_name', 'email', 'username', 'is_2fa_enabled')
 
 
 class ResetPasswordForm(forms.Form):
@@ -66,3 +66,15 @@ class CodeForm(forms.Form):
         if password != re_password:
             raise forms.ValidationError("Passwords don't match")
         return self.cleaned_data
+
+
+class TotpForm(forms.Form):
+    code = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    def clean_code(self):
+        user = User.objects.filter(totp_secret=self.cleaned_data['code']).first()
+
+        if not user or user.verify_otp(self.cleaned_data['code']):
+            raise forms.ValidationError("TOTP invalid")
+
+        return self.cleaned_data['code']
