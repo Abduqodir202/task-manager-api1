@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth import logout
 from django.contrib.auth import authenticate, login
 
+
 from .models import Post
 from .serializers import PostSerializer
 
@@ -115,3 +116,12 @@ class LogoutAPIView(APIView):
             "success": True,
             "message": "Logout successful"
         }, status=status.HTTP_200_OK)
+
+
+
+
+class PostModelViewSet(ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
