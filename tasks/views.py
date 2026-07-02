@@ -4,13 +4,14 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from django.shortcuts import get_object_or_404
-from django.contrib.auth import logout
-from django.contrib.auth import authenticate, login
+from rest_framework.pagination import PageNumberPagination
 
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import logout, authenticate, login
 
 from .models import Post
 from .serializers import PostSerializer
+
 
 
 class PostListCreateAPIView(APIView):
@@ -79,10 +80,34 @@ class PostDetailAPIView(APIView):
         }, status=status.HTTP_204_NO_CONTENT)
 
 
+
+class PostPagination(PageNumberPagination):
+    page_size = 5
+
+
+
 class PostModelViewSet(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    pagination_class = PostPagination
+
+
+    # FILTER
+    filterset_fields = {
+        'created_at': ['exact', 'year', 'month', 'day'],
+        'title': ['exact', 'icontains'],
+        'content': ['exact', 'icontains'],
+    }
+
+    # SEARCH
+    search_fields = ['title', 'content']
+
+    # ORDERING
+    ordering_fields = ['created_at', 'title', 'id']
+    ordering = ['-created_at']
 
 
 class LoginAPIView(APIView):
@@ -107,6 +132,8 @@ class LoginAPIView(APIView):
             "message": "Invalid credentials"
         }, status=status.HTTP_401_UNAUTHORIZED)
 
+
+
 class LogoutAPIView(APIView):
 
     def post(self, request):
@@ -116,12 +143,3 @@ class LogoutAPIView(APIView):
             "success": True,
             "message": "Logout successful"
         }, status=status.HTTP_200_OK)
-
-
-
-
-class PostModelViewSet(ModelViewSet):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-
-    permission_classes = [IsAuthenticatedOrReadOnly]
