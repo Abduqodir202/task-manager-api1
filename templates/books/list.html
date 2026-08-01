@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}
+    book list
+{% endblock %}
+
+{% block main %}
+
+    <h1>📚 {% trans "Book List page" %}</h1>
+    {#    {% if request.user.role == 'poster' %}#}
+    {% if perms.books.add_books %}
+
+        <a href="{% url 'book_create_form' %}">
+            <button class="btn btn-primary">create</button>
+        </a>
+    {% endif %}
+    <div class="books">
+        {% for book in books %}
+            <div class="book-card">
+                <h2>{{ book.title }}</h2>
+                <p>{{ book.description }}</p>
+                <p>{{ book.created_time }}</p>
+                <a href="{% url 'book_detail' book.id %}">
+                    <button class="btn btn-primary">detail</button>
+                </a>
+
+                {#                {% if request.user.role == 'poster' %}#}
+                {% if perms.books.change_books %}
+
+                    <a href="{% url 'book_update_form' book.id %}">
+                        <button class="btn btn-warning">update</button>
+                    </a>
+                {% endif %}
+
+                {% if perms.books.delete_books %}
+
+                    <a href="{% url 'book_delete' book.id %}">
+                        <button class="btn btn-danger">delete</button>
+                    </a>
+                {% endif %}
+
+            </div>
+        {% endfor %}
+    </div>
+
+    <nav aria-label="...">
+        <ul class="pagination">
+
+            {#            Previous#}
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?search={{ search }}&page={{ page_obj.previous_page_number }}"
+                       tabindex="-1"
+                       aria-disabled="true">Previous</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+            {% endif %}
+
+
+            {#          raqamlar chiqadigan joy  #}
+            {% for book in page_obj.paginator %}
+                {% if page_obj.number == book.number %}
+                    <li class="page-item active"><a class="page-link"
+                                                    href="?search={{ search }}&page={{ book.number }}">{{ book.number }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item"><a class="page-link"
+                                             href="?search={{ search }}&page={{ book.number }}">{{ book.number }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {##}
+            {#            <li class="page-item active" aria-current="page">#}
+            {#                <a class="page-link" href="#">2</a>#}
+            {#            </li>#}
+
+
+            {#            next #}
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?search={{ search }}&page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            {% endif %}
+
+        </ul>
+    </nav>
+{% endblock %}

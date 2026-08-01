@@ -1,3 +1,14 @@
-Django==6.0.5
-djangorestframework==3.17.1
-django-debug-toolbar==7.0.0
+django==5.2.12
+psycopg2-binary==2.9.11
+django-extensions==4.1
+jupyter==1.1.1
+pillow==12.2.0
+django-environ==0.13.0
+django-modeltranslation==0.20.3
+django-allauth==65.16.1
+PyJWT==2.12.1
+cryptography==48.0.0
+requests
+pyotp==2.9.0
+djangorestframework-simplejwt==5.5.1
+uritemplate==4.2.0

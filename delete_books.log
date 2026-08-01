@@ -1,0 +1,9 @@
+2026-04-29 14:57:16,437 - django.utils.autoreload - INFO - Watching for file changes with StatReloader
+2026-04-29 14:57:18,364 - root - INFO - delete_books salom1 121212
+2026-04-29 14:57:47,140 - django.utils.autoreload - INFO - /Users/giyos/PycharmProjects/u13_django/books/signals.py changed, reloading.
+2026-04-29 14:57:47,511 - django.utils.autoreload - INFO - Watching for file changes with StatReloader
+2026-04-29 14:57:58,924 - root - INFO - delete_books dsads dsadsads
+2026-04-29 15:00:03,201 - django.utils.autoreload - INFO - /Users/giyos/PycharmProjects/u13_django/books/signals.py changed, reloading.
+2026-05-04 15:10:40,348 - root - INFO - delete_books salom alik1
+2026-05-04 15:10:43,787 - root - INFO - delete_books dsadsa dasdas
+2026-05-04 15:11:09,734 - root - INFO - delete_books dasdsa sadasd
