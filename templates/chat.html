@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Chat</title>
+</head>
+<body>
+
+<h2>Chat</h2>
+
+<input type="text" id="message" placeholder="Xabar yozing">
+<button onclick="sendMessage()">Yuborish</button>
+
+<hr>
+
+<div id="messages"></div>
+
+<script>
+    // 1. WebSocket ochish
+    const socket = new WebSocket("ws://127.0.0.1:8000/ws/chat/");
+
+    // Ulanish
+    socket.onopen = function () {
+        console.log("WebSocket ulandi");
+    };
+
+    // 2. Xabar qabul qilish
+    socket.onmessage = function (event) {
+
+        const data = JSON.parse(event.data);
+
+        document.getElementById("messages").innerHTML +=
+            "<p>" + data.message + "</p>";
+    };
+
+    // Ulanish uzilishi
+    socket.onclose = function () {
+        console.log("WebSocket uzildi");
+    };
+
+    // 3. Xabar yuborish
+    function sendMessage() {
+
+        const message = document.getElementById("message").value;
+
+        socket.send(JSON.stringify({
+            message: message
+        }));
+
+        document.getElementById("message").value = "";
+    }
+
+</script>
+
+</body>
+</html>

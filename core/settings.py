@@ -37,7 +37,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 # Application definition
-
+ASGI_APPLICATION = "core.asgi.application"
 INSTALLED_APPS = [
     'modeltranslation',
     'django.contrib.admin',
@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "transactions",
     "drf_yasg",
     "tasks",
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -241,4 +242,11 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "Asia/Tashkent"
 
-
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}

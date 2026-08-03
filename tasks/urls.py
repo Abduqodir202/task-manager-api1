@@ -2,6 +2,8 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import LogoutAPIView
 from rest_framework.authtoken.views import obtain_auth_token
+from .views import chat
+
 
 
 
@@ -19,7 +21,11 @@ urlpatterns = [
     path('api/token/', obtain_auth_token, name='token'),
 
     path('api/', include(router.urls)),
+    path("chat/", chat, name="chat"),
+
 ]
+
+
 
 #
 # if settings.DEBUG:

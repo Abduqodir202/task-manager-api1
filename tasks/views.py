@@ -206,3 +206,7 @@ class LogoutAPIView(APIView):
             "message": "Logout successful"
         }, status=status.HTTP_200_OK)
 
+from django.shortcuts import render
+
+def chat(request):
+    return render(request, "chat.html")
