@@ -112,8 +112,29 @@ class PostPagination(PageNumberPagination):
 
 class PostModelViewSet(ModelViewSet):
 
-    queryset = Post.objects.all()
+    queryset = Post.objects.select_related("author")
     serializer_class = PostSerializer
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    pagination_class = PostPagination
+
+    # FILTER
+    filterset_fields = {
+        "created_at": ["exact", "year", "month", "day"],
+        "title": ["exact", "icontains"],
+        "content": ["exact", "icontains"],
+    }
+
+    # SEARCH
+    search_fields = ["title", "content"]
+
+    # ORDERING
+    ordering_fields = ["created_at", "title", "id"]
+    ordering = ["-created_at"]
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
     permission_classes = [IsAuthenticatedOrReadOnly]
 
@@ -185,12 +206,3 @@ class LogoutAPIView(APIView):
             "message": "Logout successful"
         }, status=status.HTTP_200_OK)
 
-
-class PostModelViewSet(ModelViewSet):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-
-    permission_classes = [IsOwnerOrReadOnly]
-
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)

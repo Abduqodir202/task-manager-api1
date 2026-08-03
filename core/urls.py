@@ -25,6 +25,20 @@ from django.urls import path, include
 from django.conf.urls.i18n import i18n_patterns
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from django.conf import settings
+from django.urls import include, path
+
+urlpatterns = [
+    ...
+]
+
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns += [
+        path("__debug__/", include(debug_toolbar.urls)),
+    ]
+
 
 
 def home(request):

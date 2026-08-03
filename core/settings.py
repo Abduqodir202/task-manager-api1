@@ -17,9 +17,12 @@ from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 env = environ.Env()
 
+# 'modeltranslation',
 env.read_env(BASE_DIR / '.env')
+print("DB_NAME =", env("DB_NAME", default="TOPILMADI"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -53,6 +56,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.github',
+    "debug_toolbar",
 
     # local
     "books",
@@ -62,6 +66,7 @@ INSTALLED_APPS = [
     "files",
     "transactions",
     "drf_yasg",
+    "tasks",
 ]
 
 MIDDLEWARE = [
@@ -78,6 +83,8 @@ MIDDLEWARE = [
     'common.middleware.LogIPMiddleware',
     'common.middleware.TimeLimitMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -95,6 +102,10 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+INTERNAL_IPS = [
+    "127.0.0.1",
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
@@ -199,7 +210,7 @@ LOGIN_URL = reverse_lazy('login')
 
 AUTH_USER_MODEL = "accounts.User"
 
-GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID", default="")
 GOOGLE_CLIENT_SECRET = "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"
 
 GOOGLE_REDIRECT_URI = 'http://localhost:8000/accounts/google/login/callback/'
