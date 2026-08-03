@@ -1,14 +1,16 @@
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
+
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-
-from .permissions import IsOwnerOrReadOnly
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 
 from .models import Post
 from .serializers import PostSerializer
@@ -23,7 +25,7 @@ class PostListCreateAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request):
-        posts = Post.objects.all()
+        posts = Post.objects.select_related("author")
         serializer = PostSerializer(posts, many=True)
 
         return Response({
@@ -69,10 +71,7 @@ class PostDetailAPIView(APIView):
     def put(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
 
-        serializer = PostSerializer(
-            post,
-            data=request.data
-        )
+        serializer = PostSerializer(post, data=request.data)
 
         if serializer.is_valid():
             serializer.save()
@@ -110,6 +109,8 @@ class PostPagination(PageNumberPagination):
 # POST MODEL VIEWSET
 # =========================================================
 
+from django.core.cache import cache
+
 class PostModelViewSet(ModelViewSet):
 
     queryset = Post.objects.select_related("author")
@@ -117,48 +118,53 @@ class PostModelViewSet(ModelViewSet):
 
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+    throttle_classes = [
+        AnonRateThrottle,
+        UserRateThrottle,
+    ]
+
     pagination_class = PostPagination
 
-    # FILTER
     filterset_fields = {
         "created_at": ["exact", "year", "month", "day"],
         "title": ["exact", "icontains"],
         "content": ["exact", "icontains"],
     }
 
-    # SEARCH
-    search_fields = ["title", "content"]
+    search_fields = [
+        "title",
+        "content",
+    ]
 
-    # ORDERING
-    ordering_fields = ["created_at", "title", "id"]
-    ordering = ["-created_at"]
+    ordering_fields = [
+        "created_at",
+        "title",
+        "id",
+    ]
 
+    ordering = [
+        "-created_at",
+    ]
+
+    # List API ni 60 sekund cache qilish
+    @method_decorator(cache_page(60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    # POST
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+        cache.clear()
 
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    # PUT / PATCH
+    def perform_update(self, serializer):
+        serializer.save()
+        cache.clear()
 
-    pagination_class = PostPagination
-
-    # FILTER
-    filterset_fields = {
-        "created_at": ["exact", "year", "month", "day"],
-        "title": ["exact", "icontains"],
-        "content": ["exact", "icontains"],
-    }
-
-    # SEARCH
-    search_fields = ["title", "content"]
-
-    # ORDERING
-    ordering_fields = ["created_at", "title", "id"]
-    ordering = ["-created_at"]
-
-    # AUTHORNI AVTOMATIK USERGA BOG'LASH
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
-
-
+    # DELETE
+    def perform_destroy(self, instance):
+        instance.delete()
+        cache.clear()
 # =========================================================
 # LOGIN
 # =========================================================
@@ -198,7 +204,6 @@ class LoginAPIView(APIView):
 class LogoutAPIView(APIView):
 
     def post(self, request):
-
         logout(request)
 
         return Response({
@@ -206,7 +211,10 @@ class LogoutAPIView(APIView):
             "message": "Logout successful"
         }, status=status.HTTP_200_OK)
 
-from django.shortcuts import render
+
+# =========================================================
+# CHAT PAGE
+# =========================================================
 
 def chat(request):
     return render(request, "chat.html")

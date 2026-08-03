@@ -228,11 +228,20 @@ EMAIL_HOST_USER = "abduqodirrisboyev@gmail.com"
 EMAIL_HOST_PASSWORD = "ggsdnnknsaebnsaw"
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-}
 
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "5/min",
+        "user": "20/min",
+    },
+}
 CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
 
 CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
@@ -249,4 +258,14 @@ CHANNEL_LAYERS = {
             "hosts": [("127.0.0.1", 6379)],
         },
     },
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
 }
